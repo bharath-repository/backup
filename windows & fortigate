@@ -1,0 +1,119 @@
+To see routing table
+route print
+
+To see available interface
+netsh interface show interface
+
+To see network interface name
+netsh interface ipv4 show config
+
+To enable/disable interface 
+netsh interface set interface "Wi-Fi 2" enable
+netsh interface set interface "Wi-Fi 2" disable
+
+netsh interface set interface "Ethernet" enable
+netsh interface set interface "Ethernet" disable
+
+To setup static ip address to an interface 
+netsh interface ipv4 set address name="Wi-Fi 2" static 192.168.0.222 255.255.255.0 192.168.0.1
+
+To setup static dns ip / secondary dns ip address to an interface 
+netsh interface ipv4 set dns name="Wi-Fi 2" static 8.8.8.8
+
+netsh interface ipv4 set dns name="Ethernet" static 8.8.8.8 && netsh interface ip add dns name=”Ethernet” 1.1.1.1
+
+
+To get ip address through dhcp to an interface 
+
+netsh interface ipv4 set address name="Wi-Fi 2" source=dhcp && netsh interface ipv4 set dnsservers name="Wi-Fi 2" source=dhcp
+
+netsh interface ipv4 set address name="Ethernet" source=dhcp && netsh interface ipv4 set dnsservers name="Ethernet" source=dhcp
+
+To setup static route
+ipconfig
+
+route print -4 
+
+route add <destination subnet> mask <subnet mask> <gateway> metric <metric> if <interface index>
+
+route -p add <destination subnet> mask <subnet mask> <gateway> metric <metric> if <interface index>
+
+route add 192.168.1.0 mask 255.255.255.0 192.168.1.1 metric 1 if 10
+route add 10.0.0.0 mask 255.255.255.0 10.0.0.1 metric 1 if 5
+
+
+Ethernet
+route add 192.168.1.0 mask 255.255.255.0 192.168.1.254 metric 35 if 13
+route delete 192.168.1.0 mask 255.255.255.0 192.168.1.254 metric 35 if 13
+
+----------------------------------------------------------
+
+To see single interface detailed info
+netsh interface ipv4 show interface "Ethernet 9"
+netsh interface ipv4 show interface "Ethernet"
+netsh interface ipv4 show interface "Wi-Fi 2"
+
+----------------------------------------------------------
+
+To enable IP forwarding in windows
+netsh interface ipv4 set interface "Wi-Fi 2" forwarding=enabled
+netsh interface ipv4 set interface "Ethernet" forwarding=enabled
+netsh interface ipv4 set interface "Ethernet 9" forwarding=enabled
+
+--------------------------------------------------------
+
+To ping from different source interface and IP address
+ping -S <source address> <destination address>
+ping -S 192.168.10.10 192.168.1.1
+
+--------------------------------------------------------
+
+To list the available server 
+speedtest.exe -L
+
+speedtest.exe -s 44817            ----------------------sptel
+speedtest.exe -s 62216            ----------------------CTC (Singapore)
+
+--------------------------------------------------------
+
+Public Lan
+Get-NetIPInterface
+Set-NetIPInterface -InterfaceIndex 13 -InterfaceMetric 150
+netsh interface ipv4 set address name="Ethernet 9" static 203.149.221.220 255.255.255.248 203.149.221.221 && netsh interface ipv4 set dns name="Ethernet 9" static 8.8.8.8 && netsh interface ip add dns name=”Ethernet 9” 203.149.225.35
+netsh interface ipv4 set interface "Ethernet" forwarding=enabled && netsh interface ipv4 set interface "Ethernet 9" forwarding=enabled
+netsh interface ipv4 show interface "Ethernet"
+ping -S 203.149.223.17 8.8.8.8
+netsh interface ip set address name="Ethernet 9" dhcp && netsh interface ipv4 set dnsservers name="Ethernet 9" source=dhcp
+
+-----------------------------------------------------------
+
+redirection of command output to text file 
+
+ping 8.8.8.8 > C:\Users\bharath\Desktop\results.txt    ----- We have see ping result in a text file
+driverquery > C:\Users\bharath\Desktop\results.txt     ----- To list installed drivers in windows
+
+
+-----------------------------------------------------------
+
+iperf3 -c 89.187.162.1 --bidir   ---------- simultaneous upload and download 
+iperf3 -c 89.187.162.1 -R        ---------- only download
+iperf3 -c 89.187.162.1           ---------- only upload
+
+iperf3 -c speedtest.sin1.sg.leaseweb.net -p 5201-5210
+
+
+----------------------------------------------------------
+
+Fortigate - iperf test
+
+diag traffictest show
+diag traffictest run
+diag traffictest server-intf wan1
+diag traffictest client-intf wan1
+diag traffictest show
+diag traffictest run -c 89.187.162.1
+diag traffictest run -c speedtest.sin1.sg.leaseweb.net -p 5201
+diag traffictest run -c speedtest.sin1.sg.leaseweb.net -p 5210    ---- -p can specify single port at a time
+
+
+------------------------------------------------------------------
